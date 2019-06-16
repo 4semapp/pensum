@@ -175,11 +175,48 @@ the system is temporarily destroying the activity due to a configuration change 
 > * Set visibility: You can hide or show views using `setVisibility(int)`.
 
 ## Resources
+
+- https://developer.android.com/reference/android/content/res/Resources
+- https://developer.android.com/guide/topics/resources/providing-resources
+- https://developer.android.com/guide/topics/resources/available-resources
+
+> The Android resource system keeps track of all non-code assets associated with an application. You can use this class to access your application's resources. You can generally acquire the Resources instance associated with your application with getResources().
+>
+> Using application resources makes it easy to update various characteristics of your application without modifying code, and—by providing sets of alternative resources—enables you to optimize your application for a variety of device configurations (such as for different languages and screen sizes). This is an important aspect of developing Android applications that are compatible on different types of devices.
+
+> You should always externalize app resources such as images and strings from your code, so that you can maintain them independently. You should also provide alternative resources for specific device configurations, by grouping them in specially-named resource directories. At runtime, Android uses the appropriate resource based on the current configuration. For example, you might want to provide a different UI layout depending on the screen size or different strings depending on the language setting.
+
 ## Layout Classes
+
+
+
 ## Master-Detail
+
+- https://en.wikipedia.org/wiki/Master%E2%80%93detail_interface
+
+> In computer user interface design, a master–detail interface displays a master list and the details for the currently selected item. The original motivation for master detail was that such a view table on old 1980s 80-character-wide displays could only comfortably show about four columns on the screen at once, while a typical data entity will have some twenty fields. The solution is that the detail shows all twenty fields and the master shows only the commonly recognised three to five that will fit on the screen in one row without scrolling.
+
+> A master area can be a form, list or tree of items, and a detail area can be a form, list or tree of items typically placed either below or next to the master area.[1] Selecting an item from the master list causes the details of that item to be populated in the detail area.[2][3]
+
 ## Anko
+
+> Anko is a Kotlin library which makes Android application development faster and easier. It makes your code clean and easy to read, and lets you forget about rough edges of the Android SDK for Java.
+
+- Anko Commons
+  - Intents;
+  - Dialogs and toasts;
+  - Logging;
+  - Resources and dimensions.
+- Anko Layout DSL
+  - Anko Layouts is a DSL for writing dynamic Android layouts.
+
 ### Toast
+
+> A toast provides simple feedback about an operation in a small popup. It only fills the amount of space required for the message and the current activity remains visible and interactive. Toasts automatically disappear after a timeout.
+
 ### Logger
+
+
 
 # Kotlin
 
@@ -194,121 +231,3 @@ https://proandroiddev.com/the-difference-between-kotlins-functions-let-apply-wit
 ## Rest
 ## kttp
 ## doAsync
-
-View
-
--   Basic Building Block of UI
-
-ViewGroup
-
--   contains other views
-
-Layout Classes
-
--   Handle View positioning behavior
-
--   Invisible Viewgroup
-
--   provide positioning flexibility
-
-1.  FrameLayout
-
--   blocked-out area
-
--   has one direct child (generally)
-
-3.  Scroll Layout
-
--   scrollable area
-
-5.  LinearLayout
-
--   horizontal/vertical arrangement
-
--   weighted distribution ← lookup
-
-7.  RelativeLayout
-
--   relative positioning
-
--   relative to each other or parent
-
-startActivity(intent)
-
--   Starts an activity with the given intent
-
-onActivityResult(requestCode, resultCode, data)
-
--   A
-
--   callback
-
--   Starts activity B with the an intent(activity A) and a requestCode
-
--   calls onActivityResult(..) after B uses "finish()"
-
--   B
-
--   setResult(resultCode, intent) ← must be called
-
--   finish() ← called after setResult(..)
-
-Context
-
-View → ViewGroup → Layout  (special invisible layout group)
-
-OnActivityResult → Activity B → setResult(..)/finish() --> Activity A calls OnActiv...
-
-Lifetime Cycles
-
-onCreate
-
--   called if creating or recreating an old activity
-
-onStart
-
--   Called after activity is attached on inflated
-
--   can set event listeners here
-
-onPause
-
--   activity remains in memory unless space is needed
-
-onDelete
-
--   deletes activity from memory
-
--   finish() kills the activity completely
-
-Context
-
-onCreate → onStart → onResume → application runs → onPause → onStop → onDelete
-
--   onStop/onPause → call stopped Activity (kills application process if memory needed) → onCreate
-
--   onRestart → onStart
-
-Viewmodel vs Saved Instance state
-
-![](https://lh6.googleusercontent.com/pJIjWpIu8Unjf4Lk0MXp9NKXEXCHD_bkZgFwCEXcNuBaB1l1eujynzB8YroE16upiCbLaYS_SEZJgGVhFthjrsp8QPojyezBdmzTSMGknoYuUzzEfyetSfOe8HxkrgOchxgH2Gcb)
-
--   Local persistence: Stores all data you don't want to lose if you open and close the activity.
-
--   Example: A collection of song objects, which could include audio files and metadata.
-
--   [ViewModel](https://developer.android.com/reference/androidx/lifecycle/ViewModel.html): Stores in memory all the data needed to display the associated UI Controller.
-
--   Example: The song objects of the most recent search and the most recent search query.
-
-SavedInstanceState
-
--   used mainly for keeping state of inputs in screen rotating
-
--   Cannot be used with finish() as finish kills the activity
-
--   used for storing smaller amounts of data
-
-viewmodel
-
--   used for storing bigger amounts of data ex. bitmaps or list of users
