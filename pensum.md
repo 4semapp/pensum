@@ -2,7 +2,7 @@
 
 - [Android](#android)
   - [Activity](#activity)
-    - [Lifetime cycles](#lifetime-cycles)
+    - [Lifetime cycle](#lifetime-cycle)
     - [onCreate](#oncreate)
     - [onStart](#onstart)
     - [onResume](#onresume)
@@ -13,7 +13,6 @@
   - [Saving State](#saving-state)
   - [Intent](#intent)
   - [View](#view)
-  - [ViewModels](#viewmodels)
   - [Resources](#resources)
   - [Layout Classes](#layout-classes)
   - [Master-Detail](#master-detail)
@@ -38,9 +37,40 @@
 
 > An activity is a single, focused thing that the user can do. Almost all activities interact with the user, so the Activity class takes care of creating a window for you in which you can place your UI with `setContentView`. 
 
-### Lifetime cycles
+### Lifetime cycle
 
-// TODO
+> Activities in the system are managed as activity stacks. When a new activity is started, it is usually placed on the top of the current stack and becomes the running activity -- the previous activity always remains below it in the stack, and will not come to the foreground again until the new activity exits. There can be one or multiple activity stacks visible on screen.
+> 
+> An activity has essentially four states:
+> 
+> If an activity is in the foreground of the screen (at the highest position of the topmost stack), it is active or running. This is usually the activity that the user is currently interacting with.
+>
+> If an activity has lost focus but is still presented to the user, it is visible. It is possible if a new non-full-sized or transparent activity has focus on top of your activity, another activity has higher position in multi-window mode, or the activity itself is not focusable in current windowing mode. Such activity is completely alive (it maintains all state and member information and remains attached to the window manager).
+>
+> If an activity is completely obscured by another activity, it is stopped or hidden. It still retains all state and member information, however, it is no longer visible to the user so its window is hidden and it will often be killed by the system when memory is needed elsewhere.
+The system can drop the activity from memory by either asking it to finish, or simply killing its process, making it destroyed. When it is displayed again to the user, it must be completely restarted and restored to its previous state.
+
+![](activity_lifecycle.png)
+
+There are three key loops you may be interested in monitoring within your activity:
+
+> * The entire lifetime of an activity happens between the first call to onCreate(Bundle) through to a single final call to onDestroy(). An activity will do all setup of "global" state in onCreate(), and release all remaining resources in onDestroy(). For example, if it has a thread running in the background to download data from the network, it may create that thread in onCreate() and then stop the thread in onDestroy().
+> * The visible lifetime of an activity happens between a call to onStart() until a corresponding call to onStop(). During this time the user can see the activity on-screen, though it may not be in the foreground and interacting with the user. Between these two methods you can maintain resources that are needed to show the activity to the user. For example, you can register a BroadcastReceiver in onStart() to monitor for changes that impact your UI, and unregister it in onStop() when the user no longer sees what you are displaying. The onStart() and onStop() methods can be called multiple times, as the activity becomes visible and hidden to the user.
+> * The foreground lifetime of an activity happens between a call to onResume() until a corresponding call to onPause(). During this time the activity is in visible, active and interacting with the user. An activity can frequently go between the resumed and paused states -- for example when the device goes to sleep, when an activity result is delivered, when a new intent is delivered -- so the code in these methods should be fairly lightweight.
+
+```java
+ public class Activity extends ApplicationContext {
+
+     protected void onCreate(Bundle savedInstanceState);
+     protected void onStart();
+     protected void onRestart();
+     protected void onResume();
+     protected void onPause();
+     protected void onStop();
+     protected void onDestroy();
+ }
+ 
+```
 
 ### onCreate
 
@@ -105,16 +135,45 @@ the system is temporarily destroying the activity due to a configuration change 
 
 ## Saving State
 
+- https://www.google.com/search?q=saving+state&rlz=1C1GGRV_enDK754DK754&oq=saving+state&aqs=chrome..69i57j0l5.5175639j0j7&sourceid=chrome&ie=UTF-8
 
+> Preserving and restoring an activity’s UI state in a timely fashion across system-initiated activity or application destruction is a crucial part of the user experience. In these cases the user expects the UI state to remain the same, but the system destroys the activity and any state stored in it.
+> 
+> To bridge the gap between user expectation and system behavior, use a combination of `ViewModel` objects, the `onSaveInstanceState()` method, and/or local storage to persist the UI state across such application and activity instance transitions. Deciding how to combine these options depends on the complexity of your UI data, use cases for your app, and consideration of speed of retrieval versus memory usage.
+> 
+> Regardless of which approach you take, you should ensure your app meets users expectations with respect to to their UI state, and provides a smooth, snappy UI (avoids lag time in loading data into the UI, especially after frequently occurring configuration changes, like rotation). In most cases you should use both ViewModel and `onSaveInstanceState()`.
 
 ## Intent
+
+- https://developer.android.com/reference/android/content/Intent
+- https://developer.android.com/guide/components/intents-common
 
 > An intent is an abstract description of an operation to be performed.
 >
 > An Intent provides a facility for performing late runtime binding between the code in different applications. Its most significant use is in the launching of activities, where it can be thought of as the glue between activities. It is basically a passive data structure holding an abstract description of an action to be performed.
 
+
+> Using intents, we can for example open a webpage, open the camera app, and send sms' and emails.
+>
+> An intent allows you to start an activity in another app by describing a simple action you'd like to perform (such as "view a map" or "take a picture") in an Intent object. This type of intent is called an implicit intent because it does not specify the app component to start, but instead specifies an action and provides some data with which to perform the action.
+>
+> When you call `startActivity()` or `startActivityForResult()` and pass it an implicit intent, the system resolves the intent to an app that can handle the intent and starts its corresponding Activity. If there's more than one app that can handle the intent, the system presents the user with a dialog to pick which app to use.
+
 ## View
-## ViewModels
+
+- https://developer.android.com/reference/android/view/View
+
+> This class represents the basic building block for user interface components. A View occupies a rectangular area on the screen and is responsible for drawing and event handling. View is the base class for widgets, which are used to create interactive UI components (buttons, text fields, etc.). The ViewGroup subclass is the base class for layouts, which are invisible containers that hold other Views (or other ViewGroups) and define their layout properties.
+>
+> All of the views in a window are arranged in a single tree. You can add views either from code or by specifying a tree of views in one or more XML layout files. There are many specialized subclasses of views that act as controls or are capable of displaying text, images, or other content.
+>
+> Once you have created a tree of views, there are typically a few types of common operations you may wish to perform:
+>
+> * Set properties: for example setting the text of a TextView. The available properties and the methods that set them will vary among the different subclasses of views. Note that properties that are known at build time can be set in the XML layout files.
+> * Set focus: The framework will handle moving focus in response to user input. To force focus to a specific view, call requestFocus().
+> * Set up listeners: Views allow clients to set listeners that will be notified when something interesting happens to the view. For example, all views will let you set a listener to be notified when the view gains or loses focus. You can register such a listener using setOnFocusChangeListener(android.view.View.OnFocusChangeListener). Other view subclasses offer more specialized listeners. For example, a Button exposes a listener to notify clients when the button is clicked.
+> * Set visibility: You can hide or show views using `setVisibility(int)`.
+
 ## Resources
 ## Layout Classes
 ## Master-Detail
