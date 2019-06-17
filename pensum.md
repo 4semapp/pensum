@@ -200,7 +200,7 @@ the system is temporarily destroying the activity due to a configuration change 
 
 ## Layout Classes
 
-
+> Much as with Widgets, there is no Layout base class, therefore it could be loosely defined as any class which extends ViewGroup and provides the ability to define the positioning of child Views within it. Usually, only ViewGroup subclasses which are appended with the word "Layout" (as in LinearLayout, RelativeLayout) are referred to as "layouts", other classes extending ViewGroup are usually just referred to as "view containers".
 
 ## Master-Detail
 
