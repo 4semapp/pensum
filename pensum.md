@@ -1,6 +1,7 @@
 # Android
 
 - [Android](#android)
+  - [Manifest](#manifest)
   - [Activity](#activity)
     - [Lifetime cycle](#lifetime-cycle)
     - [onCreate](#oncreate)
@@ -29,6 +30,17 @@
   - [kttp](#kttp)
   - [doAsync](#doasync)
 
+## Manifest
+
+> Every app project must have an AndroidManifest.xml file (with precisely that name) at the root of the project source set. The manifest file describes essential information about your app to the Android build tools, the Android operating system, and Google Play.
+>
+> Among many other things, the manifest file is required to declare the following:
+>
+> * The app's package name, which usually matches your code's namespace. The Android build tools use this to determine the location of code entities when building your project. When packaging the app, the build tools replace this value with the application ID from the Gradle build files, which is used as the unique app identifier on the system and on Google Play. Read more about the package name and app ID.
+> * The components of the app, which include all activities, services, broadcast receivers, and content providers. Each component must define basic properties such as the name of its Kotlin or Java class. It can also declare capabilities such as which device configurations it can handle, and intent filters that describe how the component can be started. Read more about app components.
+> * The permissions that the app needs in order to access protected parts of the system or other apps. It also declares any permissions that other apps must have if they want to access content from this app. Read more about permissions.
+> * The hardware and software features the app requires, which affects which devices can install the app from Google Play. Read more about device compatibility.
+If you're using Android Studio to build your app, the manifest file is created for you, and most of the essential manifest elements are added as you build your app (especially when using code templates).
 
 ## Activity
 
